@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3D2A996522CFD5F30085EBB3 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D2A996422CFD5F30085EBB3 /* main.cpp */; };
+		3DAF8AF4238C5C1900CE8447 /* database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DAF8AF2238C5C1900CE8447 /* database.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		3D2A996122CFD5F30085EBB3 /* neistpointTerminal */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = neistpointTerminal; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D2A996422CFD5F30085EBB3 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		3DAF8AF2238C5C1900CE8447 /* database.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = database.cpp; sourceTree = "<group>"; };
+		3DAF8AF3238C5C1900CE8447 /* database.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = database.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				3D2A996422CFD5F30085EBB3 /* main.cpp */,
+				3DAF8AF2238C5C1900CE8447 /* database.cpp */,
+				3DAF8AF3238C5C1900CE8447 /* database.hpp */,
 			);
 			path = neistpointTerminal;
 			sourceTree = "<group>";
@@ -118,6 +123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DAF8AF4238C5C1900CE8447 /* database.cpp in Sources */,
 				3D2A996522CFD5F30085EBB3 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -239,6 +245,7 @@
 		3D2A996922CFD5F30085EBB3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -247,6 +254,7 @@
 		3D2A996A22CFD5F30085EBB3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
