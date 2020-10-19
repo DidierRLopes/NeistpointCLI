@@ -1,42 +1,16 @@
-//
-//  database.cpp
-//  neistpointTerminal
-//
-//  Created by Didier Rodrigues Lopes on 25/11/2019.
-//  Copyright © 2019 Didier Lopes. All rights reserved.
-//
+/* *************************************************************************************** //
+ //                                                                                        //
+ //  database.cpp                                                                          //
+ //  neistpointTerminal                                                                    //
+ //                                                                                        //
+ //  Created by Didier Rodrigues Lopes on 2019.                                            //
+ //  Copyright © 2019 Didier Lopes. All rights reserved.                                   //
+ //                                                                                        //
+ // *************************************************************************************** */
 
-#include "database.hpp"
+#include "database.h"
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-
-#define RESET  "\x1B[0m"
-
-#define RED    "\x1B[31m"
-#define GREEN  "\x1B[32m"
-#define YELLOW "\x1B[33m"
-#define BLUE   "\x1B[34m"
-#define CYAN   "\x1B[36m"
-#define WHITE  "\x1B[37m"
-
-#define BOLD(x) "\x1B[1m" x RESET
-
-#define ERROR(x)   RED x RESET
-#define SUCCESS(x) GREEN x RESET
-#define WARNING(x) YELLOW x RESET
-#define INFO(x)    BLUE x RESET
-#define ACTION(x)  CYAN x RESET
-#define NORMAL(x)  WHITE x RESET
-
-// Define this variables so that the memory can be previously allocated in Stack
-#define NUM_SIZES      6
-#define NUM_MATERIALS  8
-#define NUM_PRODUCTS   12
-
-// Define possible sizes, materials and products
+// Define possible sizes
 std::string SIZES[NUM_SIZES] = {"XS",
                                 "S",
                                 "M",
@@ -44,6 +18,7 @@ std::string SIZES[NUM_SIZES] = {"XS",
                                 "XL",
                                 "XXL"};
 
+// Define list of materials
 std::string MATERIALS[NUM_MATERIALS] = {"White Shirt",
                                         "Grey Shirt",
                                         "Navy Shirt",
@@ -53,8 +28,12 @@ std::string MATERIALS[NUM_MATERIALS] = {"White Shirt",
                                         "Navy Sweater",
                                         "Black Sweater"};
 
+// Define materialID associated with a certain productID.
+// E.g. In order to produce "The Vintage White (Black) Shirt"
+// a "White Shirt" is needed.
 int MAT2PRO[NUM_PRODUCTS] = {0, 0, 0, 1, 2, 2, 3, 4, 5, 5, 6, 7};
 
+// Define list of products
 std::string PRODUCTS[NUM_PRODUCTS] = {  "The Vintage White (Black) Shirt",
                                         "The Vintage White (Red-black) Shirt",
                                         "The Plain White (Black) Shirt",
@@ -68,58 +47,12 @@ std::string PRODUCTS[NUM_PRODUCTS] = {  "The Vintage White (Black) Shirt",
                                         "The Original B. Navy (White) Sweater",
                                         "The Vintage B. Black (White-pink) Sweater"};
 
-enum listStrings {
-    LIST_SIZES,
-    LIST_MATERIALS,
-    LIST_PRODUCTS
-};
 
-// Define ID associated with each database
-enum matrixDB {
-    MATERIAL_TO_REQUEST = 0,
-    MATERIAL_SHIPPING   = 1,
-    MATERIAL_IN_STOCK   = 2,
-    PRODUCT_TO_CREATE   = 3,
-    PRODUCT_CREATING    = 4,
-    PRODUCT_IN_STOCK    = 5,
-    PRODUCT_SENT        = 6
-};
-
-class Database
-{
-private:
-    int materialToRequest[NUM_MATERIALS][NUM_SIZES] = {0};
-    int materialShipping[NUM_MATERIALS][NUM_SIZES] = {0};
-    int materialInStock[NUM_MATERIALS][NUM_SIZES] = {0};
-    int productToCreate[NUM_PRODUCTS][NUM_SIZES] = {0};
-    int productCreating[NUM_PRODUCTS][NUM_SIZES] = {0};
-    int productInStock[NUM_PRODUCTS][NUM_SIZES] = {0};
-    int productSent[NUM_PRODUCTS][NUM_SIZES] = {0};
-    
-public:
-    void load_matrix(std::ifstream file, int matID);
-    void load_database();
-    void save_database();
-    
-    void request_productCostumer();
-    
-    void request_material();
-    void request_product();
-    
-    void order_material();
-    void arrived_material();
-    
-    void order_product();
-    void arrived_product();
-    
-    void send_product();
-    
-    int num_items(int matID);
-    void print_matrix(int matID);
-    
-    void print_matrixPossibleProducts();
-};
-
+/**
+ * Print available sizes, materials or products based on listID
+ *
+ * @param listID from listStrings
+ */
 void print_list(int listID)
 {
     int ELEMS_LIST;
@@ -141,13 +74,20 @@ void print_list(int listID)
         pList = &PRODUCTS[0];
     }
     
-    // Print list of available materials
+    // Print selected list accordingly
     for (int i = 0; i < ELEMS_LIST; i++)
     {
         std::cout << i+1 << " - " << pList[i] << "\n";
     }
 }
 
+
+/**
+ * Return the number of items in a specified matrix
+ *
+ * @param matID from matrixDB
+ * @return number of items in a particular matrix
+ */
 int Database::num_items(int matID)
 {
     int *pMatrix = NULL;
@@ -173,6 +113,9 @@ int Database::num_items(int matID)
             break;
     }
     
+    // This will iterate either through a matrix of materials, or stocks
+    //so we need to select the iteration of rows accordingly. On the other
+    //hand the iteration of columns remains constant, since this is the size
     int MAX_ELEM = (matID <= MATERIAL_IN_STOCK) ? NUM_MATERIALS : NUM_PRODUCTS;
     for (int elem = 0; elem < MAX_ELEM; elem++)
     {
@@ -185,9 +128,9 @@ int Database::num_items(int matID)
 }
 
 
+// Load database from file: "../NeistPoint_database.csv"
 void Database::load_database()
 {
-    //std::ifstream file("/Users/DidierRodriguesLopes/Documents/git/NPMterminal/neistpointTerminal-hjsndwjjiipenthawodjnjtuguhv/Build/Products/Debug/NeistPoint_database.csv");
     std::ifstream file("../NeistPoint_database.csv");
     std::string line;
     // Pointer to first element of matrix matID
@@ -250,9 +193,10 @@ void Database::load_database()
     file.close();
 }
 
+
+// Save database in file: "../NeistPoint_database.csv"
 void Database::save_database()
 {
-    //std::ofstream file("/Users/DidierRodriguesLopes/Documents/git/NPMterminal/neistpointTerminal-hjsndwjjiipenthawodjnjtuguhv/Build/Products/Debug/NeistPoint_database.csv");
     std::ofstream file("../NeistPoint_database.csv");
     
     if (!file.is_open())
@@ -317,9 +261,11 @@ void Database::save_database()
     file.close();
 }
 
-void Database::request_productCostumer()
+
+// Performs a request of product by a customer
+void Database::request_productCustomer()
 {
-    std::cout << "What product does the costumer wants?\n";
+    std::cout << "What product does the customer wants?\n";
     std::cout << "(Option '0' will take you back to the menu)\n";
     
     int proChosen;
@@ -441,6 +387,9 @@ void Database::request_productCostumer()
     }
 }
 
+
+// Performs a request of material (done by management)
+//e.g. to have some stock
 void Database::request_material()
 {
     std::cout << BOLD(NORMAL("What material do you want to request?\n"));
@@ -495,6 +444,9 @@ void Database::request_material()
     }
 }
 
+
+// Performs a request of product (done by management)
+//e.g. to have a new sweater from something was in stock
 void Database::request_product()
 {
     std::cout << BOLD(NORMAL("What product do you want to request?\n"));
@@ -548,6 +500,8 @@ void Database::request_product()
 }
 
 
+// Based on the materialToRequest matrix orders material
+//which will end up being passed to materialShipping matrix
 void Database::order_material()
 {
     int c = 2;
@@ -690,6 +644,9 @@ void Database::order_material()
     } while (c < 0 || c > 2);
 }
 
+
+// Based on the materialShipping matrix deems material as arrived
+//which will end up being passed to materialInStock matrix
 void Database::arrived_material()
 {
     int c = 2;
@@ -832,7 +789,12 @@ void Database::arrived_material()
     } while (c < 0 || c > 2);
 }
 
-// A product is ordered
+
+// Based on the productToCreate matrix order some products to be made
+//this is equivalent to taking the necessary material to the producer
+//hence removing the material from materialInStock matrix. This products
+//on the making are hold on productCreating matrix.
+// Sequence of events, when product is ordered:
 //  - Add X products to the productCreating database
 //  - Remove X materials from the materialInStock database
 //  - Give a warning in case X is bigger than the amount of the material necessary to produce this product in materialInStock database
@@ -934,7 +896,11 @@ void Database::order_product()
     }
 }
 
-// A product arrived.
+
+// Based on the productCreating matrix some products must be selected
+//as they have made it back to the headquarters company. At this point
+//the products are added to the productInStock matrix.
+// Sequence of events, when a product has arrived:
 //  - Add X products to the productInStock database
 //  - Remove X products from the productCreating database
 //  - Give a warning in case X is bigger than the amount of this product in productCreating database
@@ -1076,7 +1042,11 @@ void Database::arrived_product()
     } while (c < 0 || c > 2);
 }
 
-// Send a product to the costumer.
+
+// Based on the productInStock matrix we are now able to send some products
+//to the customers. Hence, these products are now added to productSent matrix,
+//which can later be used for analysis of each product performance.
+// Sequence of events, when a product must be sent to a customer.
 //  - Add X products to the productSent database
 //  - Remove X products from the productInStock database
 //  - Give a warning in case X is bigger than the amount of this product in productsInStock database
@@ -1223,7 +1193,11 @@ void Database::send_product()
 }
 
 
-// Prints one of the database matrices specified by "matrixDB"
+/**
+ * Prints one of the database matrices specified by "matrixDB"
+ *
+ * @param matID from matrixDB
+ */
 void Database::print_matrix(int matID)
 {
     // Pointer to first element of matrix matID
@@ -1312,6 +1286,9 @@ void Database::print_matrix(int matID)
     std::cout << "\n";
 }
 
+
+// Print matrix of possible products to create
+//based on available material in stock
 void Database::print_matrixPossibleProducts()
 {
     std::cout << "POSSIBLE PRODUCTS TO CREATE               |  XS |  S  |  M  |  L  |  XL | XXL \n";
@@ -1359,151 +1336,4 @@ void Database::print_matrixPossibleProducts()
         std::cout << "\n";
     }
     std::cout << "\n";
-}
-
-void print_flow(void)
-{
-    std::cout << "\n\n";
-    std::cout << "request_product() --------->  [materialToRequest] \n";
-    std::cout << "                      |                 | \n";
-    std::cout << "                      |                 |  order_material()  \n";
-    std::cout << "                      |                 V \n";
-    std::cout << "                      |         [materialShipping]    \n";
-    std::cout << "                      |                 | \n";
-    std::cout << "                      |                 |  arrived_material()  \n";
-    std::cout << "                      |                 V \n";
-    std::cout << "                      |         [materialInStock]  ----  \n";
-    std::cout << "                      |                               | \n";
-    std::cout << "                      |                               | \n";
-    std::cout << "                      ------->  [productToCreate]     | \n";
-    std::cout << "                                        |             V \n";
-    std::cout << "                                        |  order_product()  \n";
-    std::cout << "                                        V \n";
-    std::cout << "                                [productCreating]    \n";
-    std::cout << "                                        | \n";
-    std::cout << "                                        |  arrived_product()  \n";
-    std::cout << "                                        V \n";
-    std::cout << "                                [productInStock]    \n";
-    std::cout << "                                        | \n";
-    std::cout << "                                        |  sent_product()  \n";
-    std::cout << "                                        V \n";
-    std::cout << "                                  [productSent]    \n";
-    
-    std::cout << "\n\n";
-}
-    
-int main() {
-    Database db;
-    db.load_database();
-    
-    std::cout << BOLD(SUCCESS("\n\nWelcome to Neist Point Management Database!\n"));
-    std::cout << ERROR("17 - See program flow\n\n");
-    
-    int val;
-    do
-    {
-        std::cout << BOLD(ACTION("1 - New Product request from costumer\n\n"));
-        // +productToCreate, and +materialToRequest if the material is not in stock
-        
-        std::cout << BOLD(ACTION("2 - Add Material to be requested\n"));
-        // +materialToRequest
-        
-        std::cout << INFO("3 - See Materials to be requested\n");
-        
-        std::cout << BOLD(ACTION("4 - Add Product to be created\n"));
-        // +productToCreate
-        
-        std::cout << INFO("5 - See Products to be created\n\n");
-        
-        
-        std::cout << BOLD(ACTION("6 - Order Material\n")); //give chance to do all at once from previous mat
-        // -materialToRequest, +materialShipping
-        
-        std::cout << INFO("7 - See Materials being shipped\n");
-        
-        std::cout << BOLD(ACTION("8 - Confirm Material has arrived\n")); //give chance to do all at once from previous mat
-        // +materialInStock, -materialShipping
-        
-        std::cout << INFO("9 - See Materials in stock\n");
-        
-        std::cout << INFO("10 - See possible products to be created from material stock\n\n");
-        
-        std::cout << BOLD(ACTION("11 - Order Products from Material stock\n"));
-        //-materialInStock, +productCreating
-        
-        std::cout << INFO("12 - See Products being created and shipped\n");
-        
-        std::cout << BOLD(ACTION("13 - Confirm Product has arrived\n")); //give chance to do all at once from previous mat
-        //+productInStock, -productCreating
-        
-        std::cout << INFO("14 - See Products in stock\n");
-        
-        std::cout << BOLD(ACTION("15 - Product is dispatched\n")); //give chance to do all at once from previous mat
-        //-productInStock, +productSold
-        
-        std::cout << INFO("16 - See Products Sent\n\n");
-        
-        std::cout << BOLD(NORMAL("What can I do for you today? (0 - EXIT and SAVE)\n"));
-        std::cin >> val;
-
-        switch(val)
-        {
-            case 1: db.request_productCostumer();
-                break;
-            case 2: db.request_material();
-                break;
-            case 3: db.print_matrix(MATERIAL_TO_REQUEST);
-                    std::cin.get();
-                    std::cin.get();
-                break;
-            case 4: db.request_product();
-                break;
-            case 5: db.print_matrix( PRODUCT_TO_CREATE );
-                    std::cin.get();
-                    std::cin.get();
-                break;
-            case 6: db.order_material();
-                break;
-            case 7: db.print_matrix(MATERIAL_SHIPPING);
-                    std::cin.get();
-                    std::cin.get();
-                break;
-            case 8: db.arrived_material();
-                break;
-            case 9: db.print_matrix( MATERIAL_IN_STOCK );
-                    std::cin.get();
-                    std::cin.get();
-                break;
-            case 10: db.print_matrixPossibleProducts();
-                break;
-            case 11: db.order_product();
-                break;
-            case 12: db.print_matrix( PRODUCT_CREATING );
-                    std::cin.get();
-                    std::cin.get();
-                break;
-            case 13: db.arrived_product();
-                break;
-            case 14: db.print_matrix( PRODUCT_IN_STOCK );
-                    std::cin.get();
-                    std::cin.get();
-                break;
-            case 15: db.send_product();
-                break;
-            case 16: db.print_matrix( PRODUCT_SENT );
-                    std::cin.get();
-                    std::cin.get();
-                break;
-            case 17: print_flow();
-                break;
-            default:
-                    std::cout << ERROR("SELECT A VALID OPTION\n\n");
-                break;
-        }
-        
-    } while (val != 0);
-    
-    db.save_database();
-    
-    return 0;
 }
