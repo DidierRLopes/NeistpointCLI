@@ -21,7 +21,7 @@ void print_flow(void)
 {
     std::cout << "\n\n";
     std::cout << "                  (request_material())                  \n";
-    std::cout << "request_product() ------------------->  [materialToRequest] \n";
+    std::cout << "request_product() ------------------->   [materialToRequest] \n";
     std::cout << "                      |                           | \n";
     std::cout << "                      |                           |  order_material()  \n";
     std::cout << "                      |                           V \n";
@@ -36,15 +36,15 @@ void print_flow(void)
     std::cout << "                     (request_product())          |             V \n";
     std::cout << "                                                  |  order_product()  \n";
     std::cout << "                                                  V \n";
-    std::cout << "                                          [productCreating]    \n";
-    std::cout << "                                                 | \n";
-    std::cout << "                                                 |  arrived_product()  \n";
-    std::cout << "                                                 V \n";
-    std::cout << "                                         [productInStock]    \n";
-    std::cout << "                                                 | \n";
-    std::cout << "                                                 |  sent_product()  \n";
-    std::cout << "                                                 V \n";
-    std::cout << "                                           [productSent]    \n";
+    std::cout << "                                           [productCreating]    \n";
+    std::cout << "                                                  | \n";
+    std::cout << "                                                  |  arrived_product()  \n";
+    std::cout << "                                                  V \n";
+    std::cout << "                                            [productInStock]    \n";
+    std::cout << "                                                  | \n";
+    std::cout << "                                                  |  sent_product()  \n";
+    std::cout << "                                                  V \n";
+    std::cout << "                                              [productSent]    \n";
     
     std::cout << "\n\n";
 }

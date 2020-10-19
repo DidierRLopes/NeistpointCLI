@@ -1288,7 +1288,6 @@ void Database::print_matrix(int matID)
 
 
 // Print matrix of possible products to create
-//based on available material in stock
 void Database::print_matrixPossibleProducts()
 {
     std::cout << "POSSIBLE PRODUCTS TO CREATE               |  XS |  S  |  M  |  L  |  XL | XXL \n";
