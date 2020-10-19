@@ -6,62 +6,12 @@ You can see more about the brand on their insta page: https://www.instagram.com/
 or on their website: https://neistclothing.com
 
 The menu of this program is shown below:
--------------------------------------------------------------------------
-Welcome to Neist Point Management Database!
-17 - See program flow
 
-1 - New Product request from costumer
-
-2 - Add Material to be requested
-3 - See Materials to be requested
-4 - Add Product to be created
-5 - See Products to be created
-
-6 - Order Material
-7 - See Materials being shipped
-8 - Confirm Material has arrived
-9 - See Materials in stock
-10 - See possible products to be created from material stock
-
-11 - Order Products from Material stock
-12 - See Products being created and shipped
-13 - Confirm Product has arrived
-14 - See Products in stock
-15 - Product is dispatched
-16 - See Products Sent
-
-What can I do for you today? (0 - EXIT and SAVE)
--------------------------------------------------------------------------
+<img width="446" alt="Captura de ecrã 2020-10-20, às 00 36 45" src="https://user-images.githubusercontent.com/25267873/96522925-595d8080-126c-11eb-83c9-eb6a53e4fc55.png">
 
 Since the menu may be a little confusing, a draft of the program flow is availabe.
 This can be seen below:
 
-                  (request_material())                  
-request_product() ------------------->   [materialToRequest] 
-                      |                           | 
-                      |                           |  order_material()  
-                      |                           V 
-                      |                   [materialShipping]    
-                      |                           | 
-                      |                           |  arrived_material()  
-                      |                           V 
-                      |                   [materialInStock]  ----  
-                      |                                         | 
-                      |                                         | 
-                      ----------------->  [productToCreate]     | 
-                     (request_product())          |             V 
-                                                  |  order_product()  
-                                                  V 
-                                          [productCreating]    
-                                                 | 
-                                                 |  arrived_product()  
-                                                 V 
-                                           [productInStock]    
-                                                 | 
-                                                 |  sent_product()  
-                                                 V 
-                                            [productSent]   
+<img width="530" alt="Captura de ecrã 2020-10-20, às 00 37 11" src="https://user-images.githubusercontent.com/25267873/96522928-5cf10780-126c-11eb-9de0-c411a1a2a90a.png">
 
--------------------------------------------------------------------------
-
-In addition, the "NeistPoint_database.csv" file will be always updated with all the matrices. 
+In addition, the "NeistPoint_database.csv" file will be always updated with the latest matrices. 
